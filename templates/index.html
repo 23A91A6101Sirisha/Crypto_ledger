@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Ledger Dashboard</title>
+    <!-- Tailwind CSS CDN for instant, beautiful styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-8 border-b border-gray-800 pb-4">
+            <h1 class="text-3xl font-bold text-emerald-400">⚡Crypto Ledger</h1>
+            <p class="text-gray-400 mt-1">Full-stack data integration app utilizing Flask & SQLite</p>
+        </header>
+
+        <!-- KPI Block -->
+        <div class="bg-gray-800 p-6 rounded-lg mb-8 border border-gray-700">
+            <p class="text-sm font-medium text-gray-400 uppercase tracking-wider">Total Portfolio Value Asset Valuation</p>
+            <p class="text-4xl font-extrabold text-white mt-1">${{ "%.2f"|format(total_value) }} USD</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Form Card -->
+            <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 h-fit">
+                <h2 class="text-xl font-bold mb-4 text-emerald-400">Log Transaction</h2>
+                <form action="/" method="POST" class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Token Name</label>
+                        <input type="text" name="token_name" placeholder="e.g. BTC" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Amount</label>
+                        <input type="number" step="any" name="amount" placeholder="0.00" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Buy Price (USD)</label>
+                        <input type="number" step="any" name="price_usd" placeholder="60000" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-900 font-bold py-2 px-4 rounded transition-colors mt-2">
+                        Execute Commit
+                    </button>
+                </form>
+            </div>
+
+            <!-- Table Card -->
+            <div class="md:col-span-2 bg-gray-800 p-6 rounded-lg border border-gray-700">
+                <h2 class="text-xl font-bold mb-4 text-emerald-400">Historical Ledger Records</h2>
+                
+                {% if not transactions %}
+                <p class="text-gray-500 italic">No transactions committed to database yet.</p>
+                {% else %}
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-700 text-gray-400 text-sm">
+                                <th class="pb-2">Token</th>
+                                <th class="pb-2">Amount</th>
+                                <th class="pb-2">Execution Price</th>
+                                <th class="pb-2 text-right">Value (USD)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-800 text-sm">
+                            {% for tx in transactions %}
+                            <tr>
+                                <td class="py-3 font-bold text-white">{{ tx.token_name }}</td>
+                                <td class="py-3 text-gray-300">{{ tx.amount }}</td>
+                                <td class="py-3 text-gray-300">${{ "%.2f"|format(tx.price_usd) }}</td>
+                                <td class="py-3 text-right font-semibold text-emerald-400">${{ "%.2f"|format(tx.amount * tx.price_usd) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
